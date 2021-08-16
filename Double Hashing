@@ -1,0 +1,110 @@
+#include <stdlib.h>
+#include <bits/stdc++.h>
+#include <iostream>
+using namespace std;
+class HashTable{
+    private:
+        int size;
+        int *h;
+    public:
+        HashTable(int size){
+            this->size=size;
+        h=(int *)calloc(size,sizeof(int));
+        }
+        int Hashkey1(int val){
+            int i=val%size;
+            return i;
+        }
+        bool isPrime(int x){
+            for(int i=2;i<(int)sqrt(x);i++){
+                if(x%i==0)
+                    return false;
+            }
+            return true;
+        }
+        int nearestPrime(int n){
+            int p=1;
+            for(int i=2;i<n;i++){
+                if(isPrime(i))
+                    p=i;
+            }
+            return p;
+        }
+        int Hashkey2(int val){
+            int mprime=nearestPrime(val);
+            return(mprime-(val%mprime));
+        }
+        void insert(int val){
+            int i=Hashkey1(val);
+            for(int j=0;j<size;j++){
+                int k=(i+(j* Hashkey2(val)))%size;
+                if(h[k]==0){
+                    h[k]=val;
+                    break;
+                }
+            }
+            display();
+        }
+        void display(){
+            for(int i=0;i<size;i++){
+                cout<<"[" <<i<<": "<<h[i]<<"]";
+            }
+        }
+        int search(int val){
+            int i=Hashkey1(val);
+            for(int j=0;j<size;j++){
+                int k=(i+(j* Hashkey2(val)))%size;
+                if(h[k]==val){
+                    return k;
+                }
+                
+            }
+            
+        }
+        void dele(int val){
+            int i=search(val);
+            if(i!=-1){
+                h[i]=0;
+            }
+            else{
+                cout<<"element is not present"<<endl;
+            }
+            
+        }
+        
+};
+int main(){
+    int size;
+    cout<<"enter size of table"<<endl;
+    cin >> size;
+    HashTable mytable(size);
+    
+    while(1){
+        cout<<"1.insert\n 2.search\n 3.delete\n 4.quit"<<endl;
+        int choice;
+        cin >> choice;
+        switch(choice){
+            case 1:
+                int ele;
+                cin>>ele;
+                mytable.insert(ele);
+                break;
+            case 2:
+                
+                cin>>ele;
+                mytable.search(ele);
+               mytable.display();
+                break;
+            case 3:
+                
+                cin>>ele;
+                mytable.dele(ele);
+                mytable.display();
+                break;
+            default:
+                exit(0);
+        }
+    }
+    return 0;
+}
+
